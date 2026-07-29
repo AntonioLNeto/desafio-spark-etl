@@ -1,0 +1,91 @@
+DESAFIO TÉCNICO — ETL COM PYSPARK
+===================================
+
+DESCRIÇÃO GERAL
+Implemente um pipeline de ETL (Extract, Transform, Load) utilizando PySpark
+para integrar dados de clientes e vendas, gerar resumos por cliente e
+relatórios financeiros por produto.
+
+O objetivo é consolidar diferentes fontes de dados, realizar transformações
+e entregar saídas estruturadas.
+
+DADOS DE ENTRADA
+
+1) Arquivo CSV de Clientes (clientes.csv)
+   Colunas: cliente_id, nome, data_nascimento
+   Exemplo:
+     cliente_id,nome,data_nascimento
+     1,João Silva,1980-05-12
+     2,Maria Souza,1995-07-30
+
+2) Arquivo TXT Posicional de Vendas (vendas.txt)
+   Formato posicional fixo:
+     venda_id    (5 posições)  — posições 1 a 5
+     cliente_id  (5 posições)  — posições 6 a 10
+     produto_id  (5 posições)  — posições 11 a 15
+     valor       (8 posições, com duas casas decimais implícitas) — posições 16 a 23
+     data_venda  (8 posições, formato YYYYMMDD) — posições 24 a 31
+
+   Exemplo de linha:
+     0000110001000011234520230401
+     0000210002000021200020230403
+
+O QUE DEVE SER FEITO
+
+1) Leitura dos dados
+   - Ler o arquivo clientes.csv
+   - Ler o arquivo vendas.txt interpretando corretamente os campos posicionais
+     (leitura manual do posicional, respeitando as posições dos campos)
+
+2) Transformação
+   - Realizar um join entre vendas e clientes usando cliente_id
+   - Calcular para cada cliente:
+       * Valor total de vendas
+       * Quantidade total de vendas realizadas
+       * Ticket médio (valor médio por venda)
+
+3) Saída principal
+   - Gerar um arquivo estruturado (resumo_clientes) contendo:
+       cliente_id, nome, total_vendas, quantidade_vendas, ticket_medio
+
+4) Segunda saída (Balanço por Produto)
+   - Gerar outro arquivo estruturado (balanco_produtos) com o resumo por produto:
+       produto_id, total_vendas_produto, quantidade_vendas_produto, ticket_medio_produto
+
+5) Organização esperada
+   - Separar bem o pipeline em funções/módulos
+   - Código preparado para receber parâmetros (ex: caminho dos arquivos)
+   - README detalhado explicando:
+       * Como rodar o pipeline
+       * Exemplo dos arquivos de entrada e saída
+
+CRITÉRIOS DE AVALIAÇÃO
+   - Entregar: pipeline completo gerando o resumo dos ganhos por cliente
+   - Código simples, claro e funcional
+   - Entregável: arquivo resumo_clientes.csv ou .parquet
+   - README detalhado explicando como rodar o pipeline e exemplo de entrada/saída
+   - Gerenciamento básico de erros
+   - Implementação de testes automatizados (unitários e/ou integração)
+
+ENTREGÁVEIS
+   - Código-fonte organizado e publicado no GitHub de maneira pública
+   - Arquivos de saída: resumo_clientes (por cliente)
+   - README explicativo
+
+OBSERVAÇÕES
+   - A leitura do vendas.txt deve ser feita manualmente, respeitando as posições
+     dos campos
+   - Particionamento por data de venda nos outputs será considerado um
+     diferencial (não obrigatório)
+   - Preferência por formato .csv ou .parquet nas saídas
+   - Projeto executável em ambiente local (não é necessária nuvem)
+
+EXEMPLO DE ESTRUTURA DOS OUTPUTS
+
+Exemplo — Resumo de Clientes:
+cliente_id | nome       | total_vendas | quantidade_vendas | ticket_medio
+1          | João Silva | 2450.00      | 5                 | 490.00
+
+Exemplo — Balanço por Produto:
+produto_id | total_vendas_produto | quantidade_vendas_produto | ticket_medio_produto
+10001      | 1450.00              | 3                          | 483.33
